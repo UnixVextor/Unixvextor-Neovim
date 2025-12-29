@@ -1,9 +1,7 @@
 -- load defaults i.e lua_lsp
 require("nvchad.configs.lspconfig").defaults()
 
-local lspconfig = require "lspconfig"
-
--- EXAMPLE
+-- LSP Servers
 local servers = {
   "html",
   "cssls",
@@ -15,21 +13,25 @@ local servers = {
   "prismals",
   "docker_compose_language_service",
   "dockerls",
+  "terraformls",
+  "tflint",
 }
+
+vim.lsp.enable(servers)
 
 local nvlsp = require "nvchad.configs.lspconfig"
 local util = require "lspconfig/util"
 
 -- lsps with default config
 for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
+  vim.lsp.config(lsp, {
     on_attach = nvlsp.on_attach,
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
-  }
+  })
 end
 
-lspconfig.docker_compose_language_service.setup {
+vim.lsp.config("docker_compose_language_service", {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
   cmd = { "docker-compose-langserver", "--stdio" },
@@ -48,9 +50,9 @@ lspconfig.docker_compose_language_service.setup {
     "compose.yml"
   ),
   single_file_support = true,
-}
+})
 
-lspconfig.ts_ls.setup {
+vim.lsp.config("ts_ls", {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
   capabilities = nvlsp.capabilities,
@@ -64,15 +66,23 @@ lspconfig.ts_ls.setup {
       },
     },
   },
-}
+})
 
-lspconfig.volar.setup {}
-
-lspconfig.gopls.setup {
+vim.lsp.config("gopls", {
   on_attach = nvlsp.on_attach,
   capabilities = nvlsp.capabilities,
   on_init = nvlsp.on_init,
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
   root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-}
+})
+
+vim.lsp.config("terraformls", {
+  on_attach = nvlsp.on_attach,
+  capabilities = nvlsp.capabilities,
+  on_init = nvlsp.on_init,
+  filetypes = { "terraform" },
+  root_dir = function(fname)
+    return vim.lsp.util.root_pattern(".terraform", ".git", "main.tf")(fname) or vim.fn.getcwd()
+  end,
+})

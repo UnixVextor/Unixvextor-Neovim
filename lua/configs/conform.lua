@@ -15,6 +15,7 @@ local options = {
     python = { "isort", "black" },
     go = { "prettier" },
     prisma = { "prettier" },
+    terraform = { "terraform" },
   },
 
   format_on_save = {

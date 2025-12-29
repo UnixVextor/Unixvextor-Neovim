@@ -13,6 +13,12 @@ return {
   },
 
   {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
+  },
+
+  {
     "stevearc/oil.nvim",
     ---@module 'oil'
     ---@type oil.SetupOpts
@@ -35,6 +41,8 @@ return {
         "html",
         "css",
         "prisma",
+        "terraformls",
+        "hcl",
       },
     },
   },
@@ -110,6 +118,36 @@ return {
       statuscolumn = { enabled = true },
       words = { enabled = true },
       image = { enabled = true },
+    },
+  },
+
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && yarn install",
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    ft = { "markdown" },
+  },
+
+  {
+    "linux-cultist/venv-selector.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
+    },
+    ft = "python", -- Load when opening Python files
+    keys = {
+      { ",v", "<cmd>VenvSelect<cr>" }, -- Open picker on keymap
+    },
+    opts = { -- this can be an empty lua table - just showing below for clarity.
+      search = {
+        fd = {
+          command = "fd 'python$' . --full-path -IH -a",
+        },
+      },
+      options = {}, -- if you add plugin options, they go here.
     },
   },
 }
